@@ -1,13 +1,16 @@
 import React, {useState} from 'react';
 import Column from "./Column";
 import 'bootstrap/dist/css/bootstrap.css'
+import ControllPanell from "./ControllPanell";
 
 
 const taskArray = [
-    {id: Math.random(), name: 'First task', status: 'todo'},
-    {id: Math.random(), name: 'Second task', status: 'progress'},
-    {id: Math.random(), name: 'Third task', status: 'review'},
-    {id: Math.random(), name: 'Fourth task', status: 'done'},
+    {id: Math.random(), name: 'First task', status: 'todo', priority: 1},
+    {id: Math.random(), name: 'First two task', status: 'todo', priority: 3},
+    {id: Math.random(), name: 'Second task', status: 'progress', priority: 1},
+    {id: Math.random(), name: 'Third task', status: 'review', priority: 2},
+    {id: Math.random(), name: 'Third two task', status: 'review', priority: 1},
+    {id: Math.random(), name: 'Fourth task', status: 'done', priority: 1},
 ]
 
 const columnArray = [
@@ -24,24 +27,71 @@ function App() {
     const [column, setColumn] = useState(columnArray);
     const [tasks, setTasks] = useState(taskArray);
 
+    const createTask = (newName, newStatus) => {
+        let newObj = {
+            id: Math.random(),
+            name: newName,
+            status: newStatus,
+        };
+        const newTask = [...tasks, newObj ]
+        setTasks(newTask)
+    }
+
     const moveTaskLeftRight = (taskId, direction ) => {
-       const newTask = taskArray.map(elem => {
+       const newTask = tasks.map(elem => {
             if(elem.id === taskId){
                 if( direction === 'right') elem.status = statusChanger[statusChanger.indexOf(elem.status) + 1];
                 if( direction === 'left') elem.status = statusChanger[statusChanger.indexOf(elem.status) - 1];
+                // if( direction === 'up') elem.priority = prioritys [prioritys.indexOf(elem.priority) + 1]
+                // if( direction === 'down') elem.priority = prioritys [prioritys.indexOf(elem.priority) - 1]
+
             }
             return elem;
         })
         setTasks(newTask);
     }
 
+    const del = (taskId) => {
+        const newList = tasks.filter(el => el.id !== taskId)
+        setTasks(newList);
+    }
+
+    const prioritys = [1, 2, 3, 4];
+
+    const priorityChange = (id, value) => {
+       const newList = tasks.map(el => {
+           if(el.id === id){
+              el.priority = prioritys [prioritys.indexOf(el.priority) + value]
+           }
+           return el;
+       })
+        setTasks(newList);
+    }
+
+    const editTask = (id, updateTask) => {
+        const newTasks = tasks.map(el => {
+            if(el.id === id){
+                return {...el, ...updateTask}
+            }
+            return el;
+        })
+        setTasks(newTasks);
+    }
+
     return (
         <div className='container'>
+
+                <ControllPanell createTask={createTask}/>
 
             <div className='row'>
 
                 {column.map((el,index) =>
                     <Column
+                        key={Math.random()}
+                        editTask={editTask}
+                        prioritys={prioritys}
+                        priorityChange={priorityChange}
+                        del={del}
                         moveTaskLeftRight={moveTaskLeftRight}
                         column={el}
                         tasks={tasks}
