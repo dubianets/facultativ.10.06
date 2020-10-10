@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import Column from "./Column";
 import 'bootstrap/dist/css/bootstrap.css'
 import ControllPanell from "./ControllPanell";
+import Trash from "./Trash";
 
 
 const taskArray = [
@@ -20,18 +21,24 @@ const columnArray = [
     {id: Math.random(), title: 'Done', status: 'done'}
 ]
 
+const trashArr = [
+    {id: Math.random(), name: 'Deleted task', status: 'progress', priority: 1}
+];
+
 const statusChanger = ['todo', 'progress', 'review', 'done']
 
 function App() {
 
     const [column, setColumn] = useState(columnArray);
     const [tasks, setTasks] = useState(taskArray);
+    const [trashList, setTrashList] = useState(trashArr);
 
     const createTask = (newName, newStatus) => {
         let newObj = {
             id: Math.random(),
             name: newName,
             status: newStatus,
+            priority: 1
         };
         const newTask = [...tasks, newObj ]
         setTasks(newTask)
@@ -52,8 +59,17 @@ function App() {
     }
 
     const del = (taskId) => {
-        const newList = tasks.filter(el => el.id !== taskId)
+        let newTrashList = [];
+        const newList = tasks
+            .map(el => {
+                if(el.id === taskId) {
+                    newTrashList = [...trashList,el]
+                }
+                return el;
+            })
+            .filter(el => el.id !== taskId)
         setTasks(newList);
+        setTrashList(newTrashList);
     }
 
     const prioritys = [1, 2, 3, 4];
@@ -78,6 +94,17 @@ function App() {
         setTasks(newTasks);
     }
 
+    const trashReturn = (trashId) => {
+      const newList = trashList.map(el => {
+          if(el.id === trashId) {return [...tasks, el]}
+          return el;
+      })
+        console.log(newList)
+        setTasks(newList);
+      //  const newList = trashList.filter( el => el.id !== trashId)
+      // setTrashList(newList);
+    }
+
     return (
         <div className='container'>
 
@@ -97,6 +124,17 @@ function App() {
                         tasks={tasks}
                     />
                 )}
+
+            </div>
+
+            <div>
+
+
+                <Trash
+                key={Math.random()}
+                trashReturn={trashReturn}
+                trashList={trashList}
+                />
 
             </div>
 
