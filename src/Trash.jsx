@@ -16,11 +16,12 @@ function Trash(props) {
                         <div>
 
                             {el.name}
-                            <Button color="primary" onClick={() => props.trashReturn(el.id)}>return iteam</Button>
+                            {' '}
                         </div>)}
 
                     </ModalBody>
                     <ModalFooter>
+                            <Button color="primary" onClick={props.trashReturn}>return iteams</Button>
                         <Button color="secondary" onClick={() => setTrashMode(!trashMode)}>Cancel</Button>
                     </ModalFooter>
                 </Modal>

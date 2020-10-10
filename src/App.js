@@ -22,7 +22,7 @@ const columnArray = [
 ]
 
 const trashArr = [
-    {id: Math.random(), name: 'Deleted task', status: 'progress', priority: 1}
+
 ];
 
 const statusChanger = ['todo', 'progress', 'review', 'done']
@@ -95,14 +95,15 @@ function App() {
     }
 
     const trashReturn = (trashId) => {
-      const newList = trashList.map(el => {
-          if(el.id === trashId) {return [...tasks, el]}
-          return el;
-      })
-        console.log(newList)
+      const newList = [...tasks,...trashList];
+      //     trashList.map(el => {
+      //     if(el.id === trashId) {return [...tasks,el]}
+      //     return el;
+      // })
+      //   console.log(newList)
         setTasks(newList);
-      //  const newList = trashList.filter( el => el.id !== trashId)
-      // setTrashList(newList);
+       //const newTrash = trashList.filter( el => el.id !== trashId)
+      setTrashList(trashArr);
     }
 
     return (
