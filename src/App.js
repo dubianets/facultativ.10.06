@@ -1,19 +1,20 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Column from "./Column";
 import 'bootstrap/dist/css/bootstrap.css'
 import ControllPanell from "./ControllPanell";
 import Trash from "./Trash";
+import axios from 'axios';
 
 
-const taskArray = [
-    {id: Math.random(), name: 'First task', status: 'todo', priority: 1},
-    {id: Math.random(), name: 'First two task', status: 'todo', priority: 3},
-    {id: Math.random(), name: 'Second task', status: 'progress', priority: 1},
-    {id: Math.random(), name: 'Third task', status: 'review', priority: 2},
-    {id: Math.random(), name: 'Third two task', status: 'review', priority: 1},
-    {id: Math.random(), name: 'Fourth task', status: 'done', priority: 1},
-]
-
+// const taskArray = [
+//     {id: Math.random(), name: 'First task', status: 'todo', priority: 1},
+//     {id: Math.random(), name: 'First two task', status: 'todo', priority: 3},
+//     {id: Math.random(), name: 'Second task', status: 'progress', priority: 1},
+//     {id: Math.random(), name: 'Third task', status: 'review', priority: 2},
+//     {id: Math.random(), name: 'Third two task', status: 'review', priority: 1},
+//     {id: Math.random(), name: 'Fourth task', status: 'done', priority: 1},
+// ]
+//
 const columnArray = [
     {id: Math.random(), title: 'ToDo', status: 'todo'},
     {id: Math.random(), title: 'Progress', status: 'progress'},
@@ -21,16 +22,14 @@ const columnArray = [
     {id: Math.random(), title: 'Done', status: 'done'}
 ]
 
-const trashArr = [
-
-];
+const trashArr = [];
 
 const statusChanger = ['todo', 'progress', 'review', 'done']
 
 function App() {
 
     const [column, setColumn] = useState(columnArray);
-    const [tasks, setTasks] = useState(taskArray);
+    const [tasks, setTasks] = useState([]);
     const [trashList, setTrashList] = useState(trashArr);
 
     const createTask = (newName, newStatus) => {
@@ -58,19 +57,33 @@ function App() {
         setTasks(newTask);
     }
 
-    const del = (taskId) => {
-        let newTrashList = [];
-        const newList = tasks
-            .map(el => {
-                if(el.id === taskId) {
-                    newTrashList = [...trashList,el]
-                }
-                return el;
-            })
-            .filter(el => el.id !== taskId)
-        setTasks(newList);
-        setTrashList(newTrashList);
-    }
+    // const del = (taskId) => {
+    //     let newTrashList = [];
+    //     const newList = tasks
+    //         .map(el => {
+    //             if(el.id === taskId) {
+    //                 newTrashList = [...trashList,el]
+    //             }
+    //             return el;
+    //         })
+    //         .filter(el => el.id !== taskId)
+    //     setTasks(newList);
+    //     setTrashList(newTrashList);
+    // }
+    const del =(taskId) => {
+        axios.delete("https://nazarov-kanban-server.herokuapp.com/card/" + taskId)
+            .then(res => {
+                axios.get("https://nazarov-kanban-server.herokuapp.com/card")
+                    .then(res => {
+                        setTasks(res.data);
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    })
+                })
+            .catch((err => {
+                console.log(err) })
+            )}
 
     const prioritys = [1, 2, 3, 4];
 
@@ -106,10 +119,22 @@ function App() {
       setTrashList(trashArr);
     }
 
+    useEffect(() => {
+        axios.get("https://nazarov-kanban-server.herokuapp.com/card")
+            .then(res => {
+                setTasks(res.data);
+        })
+            .catch(err => {
+                console.log(err)
+            })
+    }, [])
+
     return (
         <div className='container'>
 
-                <ControllPanell createTask={createTask}/>
+                <ControllPanell
+                    createTask={createTask}
+                />
 
             <div className='row'>
 
