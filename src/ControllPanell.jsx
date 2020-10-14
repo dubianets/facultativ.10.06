@@ -9,13 +9,17 @@ function ControllPanell (props) {
     const [creatMode, setCreatMode] = useState(false)
     const[nameInputValue, setNameInputV] = useState('')
     const[statusInputValue, setStatusInputV] = useState('todo')
+    const[priorityInputValue, setPriorityInputV] = useState('')
+    const[descriptionInputValue, setDescriptionInputValue] = useState('')
 
 
     const CreateButtonHandler = () => {
-        props.createTask(nameInputValue,statusInputValue)
+        props.createTask(nameInputValue,statusInputValue, descriptionInputValue,priorityInputValue)
         setCreatMode(!creatMode)
         setNameInputV('')
         setStatusInputV('')
+        setDescriptionInputValue('')
+        setPriorityInputV('')
     }
 
     return (
@@ -30,6 +34,12 @@ function ControllPanell (props) {
                             <label>Name:</label>
                             <Input type="text" value={nameInputValue} placeholder="type name here"
                                    onChange={(event) => setNameInputV(event.target.value) }/>
+                            <label>Description:</label>
+                            <Input type="text" value={descriptionInputValue} placeholder="type description here"
+                                   onChange={(event) => setDescriptionInputValue(event.target.value) }/>
+                                   <label>Priority:</label>
+                            <Input type="text" value={priorityInputValue} placeholder="type priority here"
+                                   onChange={(event) => setPriorityInputV(event.target.value) }/>
                             <label>Status:</label>
                             <Input type="select" value={statusInputValue} onChange={(event) => setStatusInputV(event.target.value)}>
                                 <option value='todo'>To do</option>

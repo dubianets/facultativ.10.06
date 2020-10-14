@@ -25,18 +25,21 @@ function Tasks (props) {
             <div className='card-body'>
 
 
-                <h5 className='card-title'>{props.tasks.name}{' '}{props.tasks.priority}</h5>
-                <p>{props.tasks.description}</p>
+                <h5 className='card-title'>{props.tasks.name}</h5>
+                <h6>
+                    Priority : {props.tasks.priority}
                 <Button disabled={props.tasks.priority === props.prioritys[props.prioritys.length-1]} outline color="info" onClick={() => props.priorityChange(props.tasks.id, 1)}>↑</Button>
                 <Button disabled={props.tasks.priority === props.prioritys[0]} outline color="info" onClick={() => props.priorityChange(props.tasks.id, -1)}>↓</Button>
+                </h6>
+                <p>{props.tasks.description}</p>
                 <p>{props.tasks.status}</p>
                 {props.tasks.status !== 'todo' &&
                 <a className="btn btn-primary" href="#" role="button"
-                   onClick={() => props.moveTaskLeftRight(props.tasks.id,'left')}>←</a>
+                   onClick={() => props.moveTaskLeftRight(props.tasks._id,'left')}>←</a>
                 }
                 {props.tasks.status !== 'done' &&
                 <a className="btn btn-primary" href="#" role="button"
-                   onClick={() => props.moveTaskLeftRight(props.tasks.id,'right')}>→</a>
+                   onClick={() => props.moveTaskLeftRight(props.tasks._id,'right')}>→</a>
                 }
                 <Button onClick={() => setConfirmationMode(!confirmationMode)}>delete</Button>
                 <Button outline color="warning" onClick={() => setEditMode(true)}>Edit</Button>

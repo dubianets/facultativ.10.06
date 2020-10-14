@@ -32,29 +32,42 @@ function App() {
     const [tasks, setTasks] = useState([]);
     const [trashList, setTrashList] = useState(trashArr);
 
-    const createTask = (newName, newStatus) => {
+    const createTask = async (newName, newStatus, newDescription, newPriority) => {
         let newObj = {
             id: Math.random(),
             name: newName,
             status: newStatus,
-            priority: 1
+            priority: newPriority,
+            description: newDescription
         };
-        const newTask = [...tasks, newObj ]
-        setTasks(newTask)
+       await axios.post("https://nazarov-kanban-server.herokuapp.com/card/",newObj)
+           .then(res => {
+               axios.get("https://nazarov-kanban-server.herokuapp.com/card")
+                   .then(res => {
+                       setTasks(res.data)
+                   });
+                   })
+                   .catch(err => {
+                       console.log(err)});
     }
 
-    const moveTaskLeftRight = (taskId, direction ) => {
-       const newTask = tasks.map(elem => {
-            if(elem.id === taskId){
-                if( direction === 'right') elem.status = statusChanger[statusChanger.indexOf(elem.status) + 1];
-                if( direction === 'left') elem.status = statusChanger[statusChanger.indexOf(elem.status) - 1];
-                // if( direction === 'up') elem.priority = prioritys [prioritys.indexOf(elem.priority) + 1]
-                // if( direction === 'down') elem.priority = prioritys [prioritys.indexOf(elem.priority) - 1]
-
-            }
-            return elem;
+    const moveTaskLeftRight = async (taskId, direction ) => {
+       let result = tasks.filter(elem => elem.id === taskId)
+        result.map(el => {
+                if( direction === 'right') return {...el, status: statusChanger[statusChanger.indexOf(el.status) + 1]};
+                if( direction === 'left') return  {...el, status: statusChanger[statusChanger.indexOf(el.status) - 1]};
+        console.log(result);
         })
-        setTasks(newTask);
+        const obj = {...result[0]}
+              await  axios.patch("https://nazarov-kanban-server.herokuapp.com/card/" + taskId, {status: statusChanger[2]} )
+                    .then(res => {
+                        axios.get("https://nazarov-kanban-server.herokuapp.com/card")
+                            .then(res => {
+                                setTasks(res.data)
+                            });
+                    })
+                    .catch(err => {
+                        console.log(err)});
     }
 
     // const del = (taskId) => {
