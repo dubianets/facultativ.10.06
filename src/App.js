@@ -42,32 +42,23 @@ function App() {
         };
        await axios.post("https://nazarov-kanban-server.herokuapp.com/card/",newObj)
            .then(res => {
-               axios.get("https://nazarov-kanban-server.herokuapp.com/card")
-                   .then(res => {
-                       setTasks(res.data)
-                   });
+               getCards()
                    })
                    .catch(err => {
                        console.log(err)});
     }
 
-    const moveTaskLeftRight = async (taskId, direction ) => {
-       let result = tasks.filter(elem => elem.id === taskId)
-        result.map(el => {
-                if( direction === 'right') return {...el, status: statusChanger[statusChanger.indexOf(el.status) + 1]};
-                if( direction === 'left') return  {...el, status: statusChanger[statusChanger.indexOf(el.status) - 1]};
-        console.log(result);
-        })
-        const obj = {...result[0]}
-              await  axios.patch("https://nazarov-kanban-server.herokuapp.com/card/" + taskId, {status: statusChanger[2]} )
-                    .then(res => {
-                        axios.get("https://nazarov-kanban-server.herokuapp.com/card")
-                            .then(res => {
-                                setTasks(res.data)
-                            });
-                    })
-                    .catch(err => {
-                        console.log(err)});
+    const moveTaskLeftRight = (taskId, direction ) => {
+        let result = tasks.filter(elem => elem._id === taskId)
+        result={...result[0], status: statusChanger[statusChanger.indexOf(result[0].status) + direction]}
+
+        console.log(result)
+        axios.patch("https://nazarov-kanban-server.herokuapp.com/card/" + taskId, {status: result.status} )
+            .then(res => {
+                getCards()
+            })
+            .catch(err => {
+                console.log(err)});
     }
 
     // const del = (taskId) => {
@@ -86,38 +77,53 @@ function App() {
     const del =(taskId) => {
         axios.delete("https://nazarov-kanban-server.herokuapp.com/card/" + taskId)
             .then(res => {
-                axios.get("https://nazarov-kanban-server.herokuapp.com/card")
-                    .then(res => {
-                        setTasks(res.data);
-                    })
-                    .catch(err => {
-                        console.log(err)
-                    })
+                getCards()
                 })
             .catch((err => {
                 console.log(err) })
             )}
 
-    const prioritys = [1, 2, 3, 4];
+    const prioritys = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
     const priorityChange = (id, value) => {
-       const newList = tasks.map(el => {
-           if(el.id === id){
-              el.priority = prioritys [prioritys.indexOf(el.priority) + value]
-           }
-           return el;
-       })
-        setTasks(newList);
+        axios.patch(`https://nazarov-kanban-server.herokuapp.com/card/${id}`,{priority:value})
+            .then(res => {
+                getCards()
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    })
+
+       // const newList = tasks.map(el => {
+       //     if(el.id === id){
+       //        el.priority = prioritys [prioritys.indexOf(el.priority) + value]
+       //     }
+       //     return el;
+       // })
+       //  setTasks(newList);
     }
 
-    const editTask = (id, updateTask) => {
-        const newTasks = tasks.map(el => {
-            if(el.id === id){
-                return {...el, ...updateTask}
-            }
-            return el;
+    const editTask = (id,newDescription, newName, newPriority, newStatus) => {
+        const updatedTask = {
+            description: newDescription,
+            name: newName,
+            priority: newPriority,
+            status: newStatus
+        }
+        axios.patch(`https://nazarov-kanban-server.herokuapp.com/card/${id}`, updatedTask)
+        .then(res => {
+            getCards();
         })
-        setTasks(newTasks);
+            .catch(err => {
+                console.log(err)
+            })
+        // const newTasks = tasks.map(el => {
+        //     if(el.id === id){
+        //         return {...el, ...updateTask}
+        //     }
+        //     return el;
+        // })
+        // setTasks(newTasks);
     }
 
     const trashReturn = (trashId) => {
@@ -132,14 +138,18 @@ function App() {
       setTrashList(trashArr);
     }
 
-    useEffect(() => {
-        axios.get("https://nazarov-kanban-server.herokuapp.com/card")
+    const getCards = () => {
+        return axios.get("https://nazarov-kanban-server.herokuapp.com/card")
             .then(res => {
                 setTasks(res.data);
-        })
+            })
             .catch(err => {
                 console.log(err)
             })
+    }
+
+   useEffect(() => {
+       getCards()
     }, [])
 
     return (
