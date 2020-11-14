@@ -49,7 +49,7 @@ function ControllPanell (props) {
                             </Input>
                         </ModalBody>
                         <ModalFooter>
-                            <Button color="primary" onClick={CreateButtonHandler}>Create new task</Button>{' '}
+                            <Button color="primary" onClick={CreateButtonHandler}>Create new task!</Button>{' '}
                             <Button color="secondary" onClick={() => setCreatMode(!creatMode)} >Cancel</Button>
                         </ModalFooter>
                     </Modal>
