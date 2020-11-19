@@ -8,10 +8,12 @@ function EditModel (props) {
 
     const[nameInputValue, setNameInputV] = useState(props.task.name)
     const[statusInputValue, setStatusInputV] = useState(props.task.status)
+    const[descriptionInputValue, setDescriptionInputV] = useState(props.task.description)
+    const[priorityInputValue, setPriorityInputV] = useState(props.task.priority)
 
 
     const CreateButtonHandler = () => {
-        props.editTask(props.task.id,{name: nameInputValue, status: statusInputValue})
+        props.editTask(props.task._id, descriptionInputValue, nameInputValue, priorityInputValue, statusInputValue)
         props.changeEditModel();
     }
 
@@ -22,9 +24,15 @@ function EditModel (props) {
                 <Modal isOpen={props.editMode}>
                     <ModalHeader>Edit Task</ModalHeader>
                     <ModalBody>
+                        <label>Description :</label>
+                        <Input type="text" value={descriptionInputValue} placeholder="type description here"
+                               onChange={(event) => setDescriptionInputV(event.target.value) }/>
                         <label>Name:</label>
                         <Input type="text" value={nameInputValue} placeholder="type name here"
                                onChange={(event) => setNameInputV(event.target.value) }/>
+                               <label>Priority :</label>
+                        <Input type="text" value={priorityInputValue} placeholder="type priority here"
+                               onChange={(event) => setPriorityInputV(event.target.value) }/>
                         <label>Status:</label>
                         <Input type="select" value={statusInputValue} onChange={(event) => setStatusInputV(event.target.value)}>
                             <option value='todo'>To do</option>
